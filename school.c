@@ -7,14 +7,10 @@ void app()
     cmdClearScreen();
     askForOperation();
 }
-
 void askForOperation()
 {
-    static int lastNum =1;
     u32 operationNumber=0 ;
-    u8 exitFlag=0,addflag=0, removeFlag=0 ;
-    file_write = fopen("school_database.txt", "a+");
-    file_read = fopen("school_database.txt", "r");
+    u8 exitFlag=0;
     cmdSetConsoleColour(TEXT_Blue);
     choiseForOpration();
     scanf("%d",&operationNumber);
@@ -22,53 +18,21 @@ void askForOperation()
     {
     case 1:
     {
-        if (file_write == NULL)
-        {
-            printf("Error opening the file_write.\n");
-            return;
-        }
-        file_write = fopen("school_database.txt", "a+");
-        newStudent.noOfStudents=lastNum;
-        /*
-        if(lastNum==1)
-        {
-            newStudent.school = (student_t*) calloc(1000, sizeof(student_t));
-            //newStudent.school = (student_t*) calloc(newStudent.noOfStudents, sizeof(student_t));
-        }
-        else
-        {
-            newStudent.school= (student_t*)realloc(newStudent.school, newStudent.noOfStudents);
-        }
-        */
         while(exitFlag != 'y' )
         {
-            addflag= addStudent(file_write, &newStudent);
-            //printf("%d\n",addflag);
-            lastNum=newStudent.noOfStudents;
-            if(lastNum==0)
-            {
-                lastNum=1;
-            }
+            addStudent();
             printf("\t\t\t Do you want to exit adding ? press [y to exit and any key to continue]\n");
             fflush(stdin);
             scanf("%c",&exitFlag);
             fflush(stdin);
         }
-        fclose(file_write);
         break;
     }
     case 2:
     {
-
-        file_read = fopen("school_database.txt", "r");
-        if (file_read == NULL)
-        {
-            printf("Error opening the file_read.\n");
-            return;
-        }
         while(exitFlag != 'y' )
         {
-            editStudentData(file_read, &newStudent);
+            editStudentData();
             printf("\t\t\t Do you want to exit adding ? press [y to exit and any key to continue]\n");
             fflush(stdin);
             scanf("%c",&exitFlag);
@@ -78,128 +42,95 @@ void askForOperation()
     }
     case 3:
     {
-        file_read = fopen("school_database.txt", "r");
-        if (file_read == NULL)
-        {
-            printf("Error opening the file_read.\n");
-            return;
-        }
         while(exitFlag != 'y' )
         {
-            printStudentData(file_read, &newStudent);
+            printStudentData();
             printf("\t\t\t Do you want to exit  ? press [y to exit and any key to continue]\n");
             fflush(stdin);
             scanf("%c",&exitFlag);
         }
-        fclose(file_read);
         break;
     }
     case 4:
     {
-        file_read = fopen("school_database.txt", "r");
-        if (file_read == NULL)
-        {
-            printf("Error opening the file_read.\n");
-            return;
-        }
         while(exitFlag != 'y' )
         {
-            printAllStudentData(file_read, &newStudent);
+            printAllStudentData();
             printf("\t\t\t Do you want to exit  ? press [y to exit and any key to continue]\n");
             fflush(stdin);
             scanf("%c",&exitFlag);
         }
-        fclose(file_read);
         break;
     }
     case 5:
     {
-        file_read = fopen("school_database.txt", "r");
-        if (file_read == NULL)
-        {
-            printf("Error opening the file_read.\n");
-            return;
-        }
         while(exitFlag != 'y' )
         {
-            removeFlag=removeStudent(file_read, &newStudent);
-            if(removeFlag)
-            {
-                lastNum--;
-            }
+            removeStudent();
             printf("\t\t\t Do you want to exit adding ? press [y to exit and any key to continue]\n");
             fflush(stdin);
             scanf("%c",&exitFlag);
         }
-        fclose(file_read);
         break;
     }
     case 6:
     {
-        file_read = fopen("school_database.txt", "r");
-        if (file_read == NULL)
-        {
-            printf("Error opening the file_read.\n");
-            return;
-        }
         while(exitFlag != 'y' )
         {
-            callStudent(file_read, &newStudent);
+            callStudent();
             printf("\t\t\t Do you want to exit adding ? press [y to exit and any key to continue]\n");
             fflush(stdin);
             scanf("%c",&exitFlag);
         }
-        fclose(file_read);
         break;
     }
     }
-
 }
-char addStudent(FILE* file_write,  school_t* newStudent)
+void addStudent()
 {
     u8 enterFlag=1, flag;
     cmdClearScreen();
-    if(newStudent->noOfStudents <= MAX_NUM_OF_STUDENTS)
+    if(newStudent.noOfStudents <= MAX_NUM_OF_STUDENTS)
     {
-        if(newStudent->school != null_pointer)
+        if(newStudent.school != null_pointer)
         {
             cmdSetConsoleColour(TEXT_LPurple);
             printf("\n\n\n\t\t\t 1. Enter student name :  ");
-            string_scan(newStudent->school[newStudent->noOfStudents-1].name, MAX_NUM_OF_STUDENT_NAME);
-            if(isNameValid(newStudent->school[ newStudent->noOfStudents-1].name))
+            string_scan(newStudent.school[newStudent.noOfStudents-1].name, MAX_NUM_OF_STUDENT_NAME);
+            if(isNameValid(newStudent.school[newStudent.noOfStudents-1].name))
             {
                 printf("\n\t\t\t 2. Enter student age :  ");
-                scanf("%d",&newStudent->school[ newStudent->noOfStudents-1].age);
+                scanf("%d",&newStudent.school[newStudent.noOfStudents-1].age);
                 printf("\n\t\t\t 3. Enter Student Phone  :  ");
-                string_scan(newStudent->school[ newStudent->noOfStudents-1].phone, MAX_NUM_OF_PHONE);
+                string_scan(newStudent.school[ newStudent.noOfStudents-1].phone, MAX_NUM_OF_PHONE);
                 printf("\n\t\t\t 4. Enter student grade :  ");
                 fflush(stdin);
 
-                scanf("%c",&newStudent->school[ newStudent->noOfStudents-1].grade);
+                scanf("%c",&newStudent.school[newStudent.noOfStudents-1].grade);
                 printf("\n\t\t\t 5. Enter Father Info :  ");
-                flag =enterPersonInfo(&newStudent->school[ newStudent->noOfStudents-1].father);
+                flag =enterPersonInfo(&newStudent.school[newStudent.noOfStudents-1].father);
                 if(flag)
                 {
                     printf("\n\t\t\t 6. Enter Mother Info :  ");
-                    flag =enterPersonInfo(&newStudent->school[ newStudent->noOfStudents-1].mother);
+                    flag =enterPersonInfo(&newStudent.school[newStudent.noOfStudents-1].mother);
                     if(flag)
                     {
                         printf("\n\t\t\t 7. Enter Number of brothers :  ");
-                        flag=scanf("%d",&newStudent->school[newStudent->noOfStudents-1].noOFBrothers);
-                        if( flag && newStudent->school[newStudent->noOfStudents-1].noOFBrothers > 0)
+                        flag=scanf("%d",&newStudent.school[newStudent.noOfStudents-1].noOFBrothers);
+                        if( flag && newStudent.school[newStudent.noOfStudents-1].noOFBrothers > 0)
                         {
-                            newStudent->school[newStudent->noOfStudents-1].brothers=(person_t *)calloc(newStudent->school[newStudent->noOfStudents-1].noOFBrothers, sizeof(person_t));
-                            if(newStudent->school[newStudent->noOfStudents-1].brothers !=null_pointer)
+                            newStudent.school[newStudent.noOfStudents-1].brothers=(person_t *)calloc(newStudent.school[newStudent.noOfStudents-1].noOFBrothers, sizeof(person_t));
+                            if(newStudent.school[newStudent.noOfStudents-1].brothers !=null_pointer)
                             {
                                 int i =0;
-                                while((newStudent->school[ newStudent->noOfStudents-1].noOFBrothers)-- >0)
+                                while((newStudent.school[newStudent.noOfStudents-1].noOFBrothers)-- >0)
                                 {
                                     printf("\t\t\t %d. Enter brother %d :  ", 8+i, i+1 );
-                                    flag =enterPersonInfo(&newStudent->school[newStudent->noOfStudents-1].brothers[i++]);
+                                    flag =enterPersonInfo(&newStudent.school[newStudent.noOfStudents-1].brothers[i++]);
                                     if(flag ==0)
                                     {
                                         enterFlag=0;
-                                        availablePlaces[newStudent->school[ newStudent->noOfStudents-1].ID-1]=0;
+                                        availablePlaces[newStudent.school[newStudent.noOfStudents-1].ID-1]=0;
                                         cmdSetConsoleColour(TEXT_Red);
                                         printf("\n\n\t\t\t Name is invalid !!!\n");
                                         cmdSetConsoleColour(TEXT_LPurple);
@@ -214,22 +145,23 @@ char addStudent(FILE* file_write,  school_t* newStudent)
                                     {
                                         if(availablePlaces[i] ==0)
                                         {
-                                            newStudent->school[newStudent->noOfStudents-1].ID=i+1;
+                                            newStudent.school[newStudent.noOfStudents-1].ID=i+1;
                                             availablePlaces[i]=1;
-                                            printf("\n\t\t\t\t\t Your ID is :  %d\n",newStudent->school[newStudent->noOfStudents-1].ID);
-                                            saveDataInFile(file_write, &newStudent->school[ newStudent->noOfStudents-1]);
-                                            newStudent->noOfStudents++;
+                                            printf("\n\t\t\t\t\t Your ID is :  %d\n",newStudent.school[newStudent.noOfStudents-1].ID);
+                                            saveDataInFile();
+                                            newStudent.noOfStudents++;
                                             break;
+
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    return 0;
+                                    return;
                                 }
                             }
                         }
-                        else if (flag&&newStudent->school[ newStudent->noOfStudents-1].noOFBrothers ==0)
+                        else if (flag&&newStudent.school[newStudent.noOfStudents-1].noOFBrothers ==0)
                         {
                             cmdSetConsoleColour(TEXT_Green);
                             printf("\n\t\t\t Adding is done successfully !!\n");
@@ -237,18 +169,18 @@ char addStudent(FILE* file_write,  school_t* newStudent)
                             {
                                 if(availablePlaces[i] ==0)
                                 {
-                                    newStudent->school[ newStudent->noOfStudents-1 ].ID=i+1;
+                                    newStudent.school[newStudent.noOfStudents-1].ID=i+1;
                                     availablePlaces[i]=1;
-                                    printf("\n\t\t\t\t\t Your ID is :  %d\n",newStudent->school[ newStudent->noOfStudents-1].ID);
-                                    saveDataInFile(file_write, &newStudent->school[ newStudent->noOfStudents-1]);
-                                    newStudent->noOfStudents++;
+                                    printf("\n\t\t\t\t\t Your ID is :  %d\n",newStudent.school[newStudent.noOfStudents-1].ID);
+                                    saveDataInFile();
+                                    newStudent.noOfStudents++;
                                     break;
                                 }
                             }
                         }
                         else
                         {
-                            return 0;
+                            return;
                         }
 
                     }
@@ -257,7 +189,7 @@ char addStudent(FILE* file_write,  school_t* newStudent)
                         cmdSetConsoleColour(TEXT_Red);
                         printf("\n\n\t\t\t Name is invalid !!!\n");
                         cmdSetConsoleColour(TEXT_LPurple);
-                        return 0;
+                        return;
                     }
                 }
                 else
@@ -265,7 +197,7 @@ char addStudent(FILE* file_write,  school_t* newStudent)
                     cmdSetConsoleColour(TEXT_Red);
                     printf("\n\n\t\t\t Name is invalid !!!\n");
                     cmdSetConsoleColour(TEXT_LPurple);
-                    return 0;
+                    return;
                 }
             }
             else
@@ -273,16 +205,16 @@ char addStudent(FILE* file_write,  school_t* newStudent)
                 cmdSetConsoleColour(TEXT_Red);
                 printf("\n\n\t\t\t Name is invalid !!!\n");
                 cmdSetConsoleColour(TEXT_LPurple);
-                return 0;
+                return;
             }
         }
         else
         {
             cmdSetConsoleColour(TEXT_Red);
-            availablePlaces[newStudent->school[ newStudent->noOfStudents-1].ID-1]=0;
+            availablePlaces[newStudent.school[newStudent.noOfStudents-1].ID-1]=0;
             printf("\n\n\n\t\t\t Sorry the school has no places !!! ");
             cmdSetConsoleColour(TEXT_LPurple);
-            return 0;
+            return;
         }
     }
     else
@@ -290,11 +222,10 @@ char addStudent(FILE* file_write,  school_t* newStudent)
         cmdSetConsoleColour(TEXT_Red);
         printf("\n\n\n\t\t\t Sorry the school has no places !!! ");
         cmdSetConsoleColour(TEXT_LPurple);
-        return 0;
+        return;
     }
-    return 1;
 }
-void callStudent(FILE* file_read,  school_t* newStudent)
+void callStudent()
 {
     u32 userID=-1, i, index=-1;
     u8 userName[MAX_NUM_OF_STUDENT_NAME], flag=-2;
@@ -304,15 +235,15 @@ void callStudent(FILE* file_read,  school_t* newStudent)
     scanf("%d",&userID);
     printf("\t\t\t 2. Enter student name :  ");
     string_scan(userName, MAX_NUM_OF_STUDENT_NAME);
-    for(i=0; i<newStudent->noOfStudents-1 ; i++)
+    for(i=0; i<newStudent.noOfStudents ; i++)
     {
-        if(newStudent->school[i].ID == userID)
+        if(newStudent.school[i].ID == userID)
         {
             index=i;
             break;
         }
     }
-    flag=string_compare(newStudent->school[index].name,userName);
+    flag=string_compare(newStudent.school[index].name,userName);
     if(flag==0)
     {
         cmdSetConsoleColour(TEXT_Green);
@@ -326,7 +257,7 @@ void callStudent(FILE* file_read,  school_t* newStudent)
                 cmdSetConsoleColour(TEXT_Sky);
                 system("cls");
                 printf("\n\n\n\t\t\t 1. Enter student ID :  %d\n",userID);
-                printf("\t\t\t 2. Enter student name :  %s\n",newStudent->school[userID-1].name);
+                printf("\t\t\t 2. Enter student name :  %s\n",newStudent.school[index].name);
                 printf("\n\n\n\t\t\t\t");
             }
             cmdDelay(1000);
@@ -339,7 +270,7 @@ void callStudent(FILE* file_read,  school_t* newStudent)
         printf("\n\n\t\t\t You set incorrect data !!!\n");
     }
 }
-int removeStudent(FILE* file_read,  school_t* newStudent)
+int removeStudent()
 {
     u32 userID=-1, i, index=-1;
     u8 userName[MAX_NUM_OF_STUDENT_NAME], flag=-2;
@@ -349,25 +280,28 @@ int removeStudent(FILE* file_read,  school_t* newStudent)
     scanf("%d",&userID);
     printf("\t\t\t 2. Enter student name :  ");
     string_scan(userName, MAX_NUM_OF_STUDENT_NAME);
-    for(i=0; i<newStudent->noOfStudents-1 ; i++)
+    for(i=0; i<newStudent.noOfStudents; i++)
     {
-        if(newStudent->school[i].ID == userID)
+        if(newStudent.school[i].ID == userID)
         {
             index=i;
             break;
         }
     }
-    flag=string_compare(newStudent->school[index].name,userName);
+    flag=string_compare(newStudent.school[index].name,userName);
     if(flag==0)
     {
-        newStudent->noOfStudents--;
-        for(i=userID-1; i<newStudent->noOfStudents-1; i++)
+        newStudent.noOfStudents--;
+        printf("%d",newStudent.noOfStudents);
+        for(i=index; i<newStudent.noOfStudents-1; i++)
         {
-            newStudent->school[i]=newStudent->school[i+1];
+            newStudent.school[i]=newStudent.school[i+1];
         }
-
-        availablePlaces[userID-1]=0;
+        availablePlaces[index]=0;
         printf("\n\t\t\t Deleting is done successfully !!\n");
+        newStudent.noOfStudents--;
+        saveDataInFile();
+        newStudent.noOfStudents++;
         return 1;
     }
     else
@@ -377,21 +311,22 @@ int removeStudent(FILE* file_read,  school_t* newStudent)
         return 0;
     }
 }
-void printAllStudentData(FILE* file_read,  school_t* newStudent)
+void printAllStudentData()
 {
     u32 i;
     cmdClearScreen();
     cmdSetConsoleColour(TEXT_Green);
+    fclose(file_read);
     printf("------------------------------------------------------------------------------------------------------------------\n");
     printf("\t\t| ID   | Name                   |            Phone       |    Age    |     Grade       |\n");
     printf("------------------------------------------------------------------------------------------------------------------\n");
-    for(i=0; i<newStudent->noOfStudents -1 ; i++)
+    for(i=0; i<newStudent.noOfStudents-1; i++)
     {
-        printf("\t\t|%3d   |  %-20s  |        %-11s     |    %-3d    |        %c        |\n", newStudent->school[i].ID,newStudent->school[i].name,newStudent->school[i].phone,newStudent->school[i].age, newStudent->school[i].grade);
+        printf("\t\t|%3d   |  %-20s  |        %-11s     |    %-3d    |        %c        |\n", newStudent.school[i].ID,newStudent.school[i].name,newStudent.school[i].phone,newStudent.school[i].age, newStudent.school[i].grade);
         printf("------------------------------------------------------------------------------------------------------------------\n");
     }
 }
-void printStudentData(FILE* file_read,  school_t* newStudent)
+void printStudentData()
 {
     u32 userID=-1,i=0,index=-1;
     u8 userName[MAX_NUM_OF_STUDENT_NAME], flag=-2;
@@ -401,22 +336,22 @@ void printStudentData(FILE* file_read,  school_t* newStudent)
     scanf("%d",&userID);
     printf("\t\t\t 2. Enter student name :  ");
     string_scan(userName, MAX_NUM_OF_STUDENT_NAME);
-    for(i=0; i<newStudent->noOfStudents-1 ; i++)
+    for(i=0; i<newStudent.noOfStudents; i++)
     {
-        if(newStudent->school[i].ID == userID)
+        if(newStudent.school[i].ID == userID)
         {
             index=i;
             break;
         }
     }
-    flag=string_compare(newStudent->school[index].name,userName);
+    flag=string_compare(newStudent.school[index].name,userName);
     if(flag==0)
     {
         printf("------------------------------------------------------------------------------------------------------------------\n");
         printf("\t\t| Name                   |            Phone       |    Age    |     Grade       |\n");
         printf("------------------------------------------------------------------------------------------------------------------\n");
 
-        printf("\t\t|  %-20s  |        %-11s     |    %-3d    |        %c        |\n",newStudent->school[userID-1].name,newStudent->school[userID-1].phone,newStudent->school[userID-1].age, newStudent->school[userID-1].grade);
+        printf("\t\t|  %-20s  |        %-11s     |    %-3d    |        %c        |\n",newStudent.school[index].name,newStudent.school[index].phone,newStudent.school[index].age, newStudent.school[index].grade);
         printf("------------------------------------------------------------------------------------------------------------------\n");
 
     }
@@ -427,7 +362,7 @@ void printStudentData(FILE* file_read,  school_t* newStudent)
 
     }
 }
-void editStudentData(FILE* file_read,  school_t* newStudent)
+void editStudentData()
 {
     u32 userID=-1, i,operation=0,index=-1;
     u8 userName[MAX_NUM_OF_STUDENT_NAME], flag=-2, exitFlag=0;
@@ -437,15 +372,15 @@ void editStudentData(FILE* file_read,  school_t* newStudent)
     scanf("%d",&userID);
     printf("\t\t\t 2. Enter student name :  ");
     string_scan(userName, MAX_NUM_OF_STUDENT_NAME);
-    for(i=0; i<newStudent->noOfStudents-1 ; i++)
+    for(i=0; i<newStudent.noOfStudents ; i++)
     {
-        if(newStudent->school[i].ID == userID)
+        if(newStudent.school[i].ID == userID)
         {
             index=i;
             break;
         }
     }
-    flag=string_compare(newStudent->school[index].name,userName);
+    flag=string_compare(newStudent.school[index].name,userName);
     if(flag==0)
     {
         while(exitFlag != 'y' )
@@ -459,20 +394,20 @@ void editStudentData(FILE* file_read,  school_t* newStudent)
                 {
                 case 1:
                     printf("\n\t\t\t\t  Enter name :  ");
-                    string_scan(newStudent->school[userID-1].name, MAX_NUM_OF_STUDENT_NAME);
+                    string_scan(newStudent.school[index].name, MAX_NUM_OF_STUDENT_NAME);
                     break;
                 case 2:
                     printf("\n\t\t\t\t  Enter phone:  ");
-                    string_scan(newStudent->school[userID-1].phone, MAX_NUM_OF_PHONE);
+                    string_scan(newStudent.school[index].phone, MAX_NUM_OF_PHONE);
                     break;
                 case 3:
                     printf("\n\t\t\t\t Enter age :  ");
-                    scanf("%d",&newStudent->school[userID-1].age);
+                    scanf("%d",&newStudent.school[index].age);
                     break;
                 case 4:
                     fflush(stdin);
                     printf("\n\t\t\t\t  Enter Grade :  ");
-                    scanf("%c",&newStudent->school[userID-1].grade);
+                    scanf("%c",&newStudent.school[index].grade);
                     break;
                 default:
                     printf("\t\t\tInvalid Operation\n");
@@ -494,15 +429,19 @@ void editStudentData(FILE* file_read,  school_t* newStudent)
         printf("\n\n\t\t\t You set incorrect data !!!\n");
 
     }
+    saveDataInFile();
 }
-void saveDataInFile(FILE* file_write, student_t *studentData)
+void saveDataInFile()
 {
-    fprintf(file_write, "ID: %d\n",studentData->ID);
-    fprintf(file_write,"Name: %s\n",studentData->name);
-    fprintf(file_write,"Age: %d\n", studentData->age);
-    fprintf(file_write,"Phone: %s\n",studentData->phone);
-    fprintf(file_write,"Grade: %c\n",studentData->grade);
-    fprintf(file_write, "\n");
+    int i=0;
+    file_write = fopen("school_database.txt", "w");
+    fprintf(file_write,"%d\n",newStudent.noOfStudents);
+    for(i=0; i<newStudent.noOfStudents; i++)
+    {
+        fprintf(file_write, "%d %s %d %s %c\n",newStudent.school[i].ID,newStudent.school[i].name,newStudent.school[i].age,newStudent.school[i].phone,newStudent.school[i].grade);
+    }
+    fclose(file_write);
+
 }
 int enterPersonInfo(person_t * person)
 {
